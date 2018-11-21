@@ -334,26 +334,17 @@ function strToNumber(str: string): number {
     export function setMotorSpeed(speed1: number, speed2: number) {
         if (speed1 > 100 || speed1 < -100 || speed2 > 100 || speed2 < -100) {
             return;
-        }
-	let speedOne = speed1;
-	let speedTwo = speed2;  
-        if (versionFlag)
-        {
-            speedOne = speed1 * -1;
-            speedTwo = speed2 * -1;
-        }    
-        else
-        {
-            speedOne = speed2 * -1;
-            speedTwo = speed1 * -1;
-        }   
+        } 
+
+   speed1 = speed1 * -1;
+   speed2 = speed2 * -1;    
    let buf = pins.createBuffer(6);
    buf[0] = 0x55;
    buf[1] = 0x55;
    buf[2] = 0x04;
    buf[3] = 0x32;//cmd type
-   buf[4] = speedOne;
-   buf[5] = speedTwo;
+   buf[4] = speed1;
+   buf[5] = speed2;
    serial.writeBuffer(buf);
 }
     
