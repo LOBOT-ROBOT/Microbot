@@ -28,7 +28,15 @@
         //% block="Light 1"
         Light1 = 0x00,
         //% block="Light 2"
-        Light2 = 0x01
+        Light2 = 0x01,
+        //% block="Light 3"
+        Light3 = 0x00,
+        //% block="Light 4"
+        Light4 = 0x01,
+        //% block="Light 5"
+        Light5 = 0x00,
+        //% block="Light 6"
+        Light6 = 0x01
     }
 
     export enum LineFollower {
@@ -42,33 +50,50 @@
         S1_IN_S2_IN = 0x03
      }
      
-     export enum Layer {
-         //% block="Layer 1"
-         LAYER_1 = 0x00,
-         //% block="Layer 2"
-         LAYER_2 = 0x01,       
-         //% block="Layer 3"
-         LAYER_3 = 0x02,    
-        //% block="Layer 4"
-        LAYER_4 = 0x03    
-     }
-
-     export enum ReleaseAngle {
-         //% block="angle 0"
-         ANGLE_0 = 0,
-         //% block="angle 30"
-         ANGLE_30 = 30,
-         //% block="angle 60"
-         ANGLE_60 = 60,
-         //% block="angle 90"
-         ANGLE_90 = 90,
-        //% block="angle 120"
-        ANGLE_120 = 120,
-        //% block="angle 150"
-         ANGLE_150 = 150,
-        //% block="angle 180"
-        ANGLE_180 = 180
-     }
+     export enum IRKEY {
+        //% block="CH-"
+        CH_MINUS=162,
+        //% block="CH"
+        CH=98,
+        //% block="CH+"
+        CH_ADD=226,
+        //% block="PREV"
+        PREV=34,
+        //% block="NEXT"
+        NEXT=2,
+        //% block="PLAY/PAUSE"
+        PLAY_PAUSE=194,
+        //% block="+"
+        ADD=168,
+        //% block="-"
+        MINUS=224,
+        //% block="EQ"
+        EQ=144,
+        //% block="100+"
+        _100=152,
+        //% block="200+"
+        _200=176,
+        //% block="R0"
+        R0=104,
+        //% block="R1"
+        R1=48,
+        //% block="R2"
+        R2=24,
+        //% block="R3"
+        R3=122,
+        //% block="R4"
+        R4=16,
+        //% block="R5"
+        R5=56,
+        //% block="R6"
+        R6=90,
+        //% block="R7"
+        R7=66,
+        //% block="R8"     
+        R8=74,
+        //% block="R9"
+        R9=82
+    }
 
     export enum CmdType {
         //% block="Invalid command"
@@ -114,57 +139,6 @@
         COMMAND_ERRO
     }
 
-    export enum KeyStatusType {
-        //% block="normal"
-        NORMAL,
-        //% block="press"
-        PRESS,
-        //% block="hold"
-        HOLD,
-        //% block="release"
-        RELEASE
-    }
-
-
-    export enum HandleButton {
-        //% block="Touch key"
-        TOUCHKEY = EventBusValue.MES_DPAD_BUTTON_1_DOWN,
-        //% block="B1"
-        B1 = EventBusValue.MES_DPAD_BUTTON_2_DOWN,
-        //% block="B2"
-        B2 = EventBusValue.MES_DPAD_BUTTON_3_DOWN,
-        //% block="B3"
-        B3 = EventBusValue.MES_DPAD_BUTTON_4_DOWN,
-        //% block="B4"
-        B4 = EventBusValue.MES_DPAD_BUTTON_A_DOWN,
-        //% block="Left joystick"
-        JOYSTICK1 = EventBusValue.MES_DPAD_BUTTON_B_DOWN,
-        //% block="Right joystick"
-        JOYSTICK2 = EventBusValue.MES_DPAD_BUTTON_C_DOWN
-    }
-
-
-    export enum HandleSensorValue {
-        //% block="Sound"
-        SOUND,
-        //% block="Light"
-        LIGHT, 
-        //% block="Power"
-        POWER,
-        //% block="Left joystick X"
-        JOYSTICK_X1,
-        //% block="Left joystick Y"
-        JOYSTICK_Y1,
-        //% block="Right joystick X"
-        JOYSTICK_X2,
-        //% block="Right joystick Y"
-        JOYSTICK_Y2,
-        //% block="Ultrasonic"
-        ULTRASONIC,
-        //% block="konb"
-        KNOB
-    }
-
 
     let lhRGBLight: RGBLight.LHRGBLight;
 	let R_F: number;
@@ -174,11 +148,13 @@
 	let G_F: number;
 
 	let b_f: number;
-     let B_F: number;
+    let B_F: number;
     
      let handleCmd: string = "";
-     let versionFlag: boolean = false; 
-     let readTimes = 0;
+     
+     let distance: number = 0;
+     
+     let MESSAGE_HEAD: number = 0xff;
 
 	/**
    * Microbot board initialization, please execute at boot time
@@ -190,41 +166,42 @@
       serial.redirect(
         SerialPin.P12,
         SerialPin.P8,
-          BaudRate.BaudRate115200);
-	basic.forever(() => {
-	if(readTimes < 5 && !versionFlag)
+        BaudRate.BaudRate115200);
+	    basic.forever(() => {
       		getHandleCmd();
-  	});	  
-	  while(readTimes < 5 && !versionFlag)
-	  {
-		readTimes++;
-                sendVersionCmd();
-          basic.pause(30)
-	  }
+  	    });	  
      }
 
      function sendVersionCmd() {
-        let buf = pins.createBuffer(4);
-        buf[0] = 0x55;
-        buf[1] = 0x55;
-        buf[2] = 0x02;
-        buf[3] = 0x12;//cmd type
-        serial.writeBuffer(buf);
- }
      
-    
   /**
   * Get the handle command.
   */
   
      function getHandleCmd() {
-         let charStr: string = serial.readString();
-         handleCmd = handleCmd.concat(charStr);  
-         let cnt: number = countChar(handleCmd, "$");
-         if (cnt > 0 && handleCmd.charAt(0).compare("V") == 0)
-         {
-             versionFlag = true;
-         }    
+        let charStr: string = serial.readString();
+        handleCmd = handleCmd.concat(charStr);
+        let cnt: number = countChar(handleCmd, "$");
+        if (cnt == 0)
+            return;
+        let index = findIndexof(handleCmd, "$", 0);
+         if (index != -1) {
+             let cmd: string = handleCmd.substr(0, index);
+             if (cmd.charAt(0).compare("A") == 0 && cmd.length == 13) {
+                 let arg1Int: number = strToNumber(cmd.substr(1, 2));
+                 let arg2Int: number = strToNumber(cmd.substr(3, 2));
+
+                 if (arg1Int != -1)
+                 {
+                     distance = arg1Int;     
+                 }
+
+                 if (arg2Int != -1)
+                 {
+                    control.raiseEvent(MESSAGE_HEAD,arg2Int);    
+                 }
+             }
+         }
   }
 
   
@@ -239,6 +216,62 @@
     }
     return cnt;
 }   
+
+function findIndexof(src: string,strFind: string,startIndex: number): number
+{
+    for (let i = startIndex; i < src.length; i++)
+    {
+        if (src.charAt(i).compare(strFind) == 0)
+        {
+            return i;
+        }    
+    }  
+    return -1;
+}
+     
+     
+function strToNumber(str: string): number {
+    let num: number = 0;
+    for (let i = 0; i < str.length; i++)
+    {
+        let tmp: number = converOneChar(str.charAt(i));
+        if (tmp == -1)
+            return -1;    
+        if (i > 0)
+            num *= 16;    
+        num += tmp;
+    }    
+    return num;
+    }
+     
+     function converOneChar(str: string): number {
+        if (str.compare("0") >= 0 && str.compare("9") <= 0) {
+            return parseInt(str);
+        }
+        else if (str.compare("A") >= 0 && str.compare("F") <= 0) {
+            if (str.compare("A") == 0) {
+                return 10;
+            }
+            else if (str.compare("B") == 0) {
+                return 11;
+            }
+            else if (str.compare("C") == 0) {
+                return 12;
+            }
+            else if (str.compare("D") == 0) {
+                return 13;
+            }
+            else if (str.compare("E") == 0) {
+                return 14;
+            }
+            else if (str.compare("F") == 0) {
+                return 15;
+            }
+            return -1;  
+        }
+        else
+            return -1; 
+    }
 
 /**
 * Set the angle of servo 1 to 8, range of 0~180 degree
@@ -325,84 +358,33 @@
    serial.writeBuffer(buf);
 }
     
-
+    /**
+     * Do someting when Qdee receive remote-control code
+     * @param code the ir key button that needs to be pressed
+     * @param body code to run when event is raised
+     */
+    //% weight=95 blockId=onQdee_remote_ir_pressed block="on remote-control|%code|pressed"
+    export function onQdee_remote_ir_pressed(code: IRKEY,body: Action) {
+        control.onEvent(MESSAGE_HEAD,code,body);
+    }
+     
 /**
 *  Obtain the distance of ultrasonic detection to the obstacle
 */
 //% weight=94 blockId=Ultrasonic block="Ultrasonic distance(cm)"
    export function Ultrasonic(): number {
 	   //init pins
-   let echoPin:DigitalPin = DigitalPin.P13;
-   let trigPin:DigitalPin = DigitalPin.P14;
-   pins.setPull(echoPin, PinPullMode.PullNone);
-   pins.setPull(trigPin, PinPullMode.PullNone);
-		   
-   // send pulse
-   pins.digitalWritePin(trigPin, 0);
-   control.waitMicros(5);
-   pins.digitalWritePin(trigPin, 1);
-   control.waitMicros(10);
-   pins.digitalWritePin(trigPin, 0);
-   control.waitMicros(5);
-   // read pulse
-   let d = pins.pulseIn(echoPin, PulseValue.High, 11600);
-    basic.pause(10);
-    return d / 36;
-     }
+    return distance;
+}
    
-  function UltrasonicMs(): number {
-	   //init pins
-   let echoPin:DigitalPin = DigitalPin.P13;
-   let trigPin:DigitalPin = DigitalPin.P14;
-   pins.setPull(echoPin, PinPullMode.PullNone);
-   pins.setPull(trigPin, PinPullMode.PullNone);
-		   
-   // send pulse
-   pins.digitalWritePin(trigPin, 0);
-   control.waitMicros(5);
-   pins.digitalWritePin(trigPin, 1);
-   control.waitMicros(10);
-   pins.digitalWritePin(trigPin, 0);
-   control.waitMicros(5);
-   // read pulse
-   let d = pins.pulseIn(echoPin, PulseValue.High, 11600);
-    basic.pause(10);
-    return d * 10 / 38;
-     }
-     
-/**
-*  Send ultrasonic distance to control board
-*/
-//% weight=93 blockId=UltrasonicSend block="Send ultrasonic distance to control board"
-     function UltrasonicSend() {
-        let distance = UltrasonicMs();
-        let buf = pins.createBuffer(6);
-        buf[0] = 0x55;
-        buf[1] = 0x55;
-        buf[2] = 0x04;
-        buf[3] = 0x33;//cmd type
-        buf[4] = distance & 0xff;
-        buf[5] = (distance >> 8) & 0xff;
-        serial.writeBuffer(buf);
-     }
-
-/**
-* Get the volume level detected by the sound sensor, range 0 to 255
-*/
-//% weight=92 blockId=Sound block="Sound volume"
-	export function getSoundVolume(): number {	
-        let volume = pins.analogReadPin(AnalogPin.P1);
-        volume = mapRGB(volume, 0, 1023, 0, 255);
-  	    return volume;
-	}	
 	
     /**
      * Obtain the condition of the tracking sensor
      */
     //% weight=91 blockGap=50  blockId=readLineStatus block="Line follower status |%status|"
     export function readLineFollowerStatus(status: LineFollower): boolean {
-        let s1 = pins.digitalReadPin(DigitalPin.P2);
-        let s2 = pins.digitalReadPin(DigitalPin.P16);
+        let s1 = pins.digitalReadPin(DigitalPin.P14);
+        let s2 = pins.digitalReadPin(DigitalPin.P13);
         let s = ((1 & s1) << 1) | s2;
         if (s == status)
         {
@@ -413,110 +395,14 @@
             return false;
         }     
      }
-    
-       /**
-     * Robot arm grab is ready
-     */
-    //% weight=90 blockId=grapReady block="Robot arm grab is ready"
-    export function grapReady() {
-       let buf = pins.createBuffer(5);
-       buf[0] = 0x55;
-       buf[1] = 0x55;
-       buf[2] = 0x03;
-       buf[3] = 0x5A;//cmd type
-       buf[4] = 0x02;
-       serial.writeBuffer(buf);
-    }
-    
-     
-      /**
-     * Robot arm grab something
-     */
-    //% weight=89 blockId=grapObject block="Robot arm grab|angle %angle| at |layer %layer|"
-    //% angle.min=0 angle.max=240
-    //% layer.min=0 layer.max=3 
-    export function grapObject(angle: number, layer: number) {
-        let distance = UltrasonicMs();
-        if (angle > 240 || angle < 0)
-        {
-            return; 
-        }    
-        let position = mapRGB(angle, 0, 240, 0, 1000);
-        position += 125;
-        if (position > 1000)
-        {
-            position = 1000;
-            }
-       let buf = pins.createBuffer(10);
-       buf[0] = 0x55;
-       buf[1] = 0x55;
-       buf[2] = 0x08;
-       buf[3] = 0x5A;//cmd type
-       buf[4] = 0x00;
-       buf[5] = distance & 0xff;
-       buf[6] = (distance >> 8) & 0xff;
-       buf[7] = position & 0xff;
-       buf[8] = (position >> 8) & 0xff;
-       buf[9] = layer & 0xff;
-       serial.writeBuffer(buf);
-    }
 
-   /**
-    *  Robot arm release something
-    */
-   //% weight=88  blockId=releaseObject block="Robot arm release|distance(Cm) %distance|angle %angle|at|layer %layer|"
-   //% angle.min=0 angle.max=240
-   //% layer.min=0 layer.max=3  
-   export function releaseObject(distance: number,angle: number, layer: number) {
-       if (angle > 240 || angle < 0)
-       {
-           return; 
-       }    
-       let position = mapRGB(angle, 0, 240, 0, 1000);
-       position += 125;
-       if (position > 1000)
-       {
-           position = 1000;
-       }
-      let buf = pins.createBuffer(10);
-      buf[0] = 0x55;
-      buf[1] = 0x55;
-      buf[2] = 0x08;
-      buf[3] = 0x5A;//cmd type
-      buf[4] = 0x01;
-      buf[5] = distance & 0xff;
-      buf[6] = (distance >> 8) & 0xff;
-      buf[7] = position & 0xff;
-      buf[8] = (position >> 8) & 0xff;
-      buf[9] = layer & 0xff;
-      serial.writeBuffer(buf);
-   }
-
-          /**
-      * Control the robot arm draw string
-      */
-     //% weight=87 blockGap=50 blockId=robotArmDrawString block="Robot arm draw %str"
-     export function robotArmDrawString(str: string)
-     { 
-         let buf = pins.createBuffer(str.length + 5);
-         buf[0] = 0x55;
-         buf[1] = 0x55;
-         buf[2] = (str.length + 3) & 0xff;
-         buf[3] = 0x57;//cmd type
-	 buf[4] = str.length & 0xff;    
-         for (let i = 0; i < str.length; i++)
-         {
-             buf[5 + i] = str.charCodeAt(i);
-         }    
-         serial.writeBuffer(buf);
-     } 
 
     /**
 	 * Initialize RGB
 	 */
 	function initRGBLight() {
 		if (!lhRGBLight) {
-			lhRGBLight = RGBLight.create(DigitalPin.P15, 2, RGBPixelMode.RGB);
+			lhRGBLight = RGBLight.create(DigitalPin.P15, 6, RGBPixelMode.RGB);
 		}
     }
     
