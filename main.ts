@@ -172,7 +172,6 @@
   	    });	  
      }
 
-     function sendVersionCmd() {
      
   /**
   * Get the handle command.
