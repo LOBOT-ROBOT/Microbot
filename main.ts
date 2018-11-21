@@ -11,7 +11,8 @@
 		S5 = 0x05,
 		S6 = 0x06,
 		S7 = 0x07,
-		S8 = 0x08
+        S8 = 0x08
+
 	}
 	
     export enum Colors {
