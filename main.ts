@@ -195,7 +195,7 @@
                      distance = arg1Int;     
                  }
 
-                 if (arg2Int != -1)
+                 if (arg2Int != -1 && arg2Int != 0)
                  {
                     control.raiseEvent(MESSAGE_HEAD,arg2Int);    
                  }
