@@ -30,13 +30,15 @@
         //% block="Light 2"
         Light2 = 0x01,
         //% block="Light 3"
-        Light3 = 0x00,
+        Light3 = 0x02,
         //% block="Light 4"
-        Light4 = 0x01,
+        Light4 = 0x03,
         //% block="Light 5"
-        Light5 = 0x00,
+        Light5 = 0x04,
         //% block="Light 6"
-        Light6 = 0x01
+        Light6 = 0x05,
+        //% block="All"
+        All = 0x06
     }
 
     export enum LineFollower {

@@ -12,6 +12,7 @@
 	"microbot.Lights.Light4|block":"彩灯4",
 	"microbot.Lights.Light5|block":"彩灯5",
 	"microbot.Lights.Light6|block":"彩灯6",
+	"microbot.Lights.All|block":"所有",
 	"microbot.setPixelRGB|block":"设置|%lightoffset|颜色为 %rgb",
 	"microbot.setPixelRGBArgs|block":"设置|%lightoffset|颜色为 %rgb",
 	"microbot.showLight|block":"显示彩灯",
