@@ -186,7 +186,7 @@
         let index = findIndexof(handleCmd, "$", 0);
          if (index != -1) {
              let cmd: string = handleCmd.substr(0, index);
-             if (cmd.charAt(0).compare("A") == 0 && cmd.length == 13) {
+             if (cmd.charAt(0).compare("A") == 0 && cmd.length == 5) {
                  let arg1Int: number = strToNumber(cmd.substr(1, 2));
                  let arg2Int: number = strToNumber(cmd.substr(3, 2));
 
@@ -373,7 +373,7 @@ function strToNumber(str: string): number {
     /**
      * Set the color of the colored lights, after finished the setting please perform  the display of colored lights.
      */
-    //% weight=86 blockId=setLightColor block="Set|%lightoffset|color to %rgb"
+    //% weight=86 blockId=setPixelRGB block="Set|%lightoffset|color to %rgb"
     export function setPixelRGB(lightoffset: Lights, rgb: RGBColors)
     {
         lhRGBLight.setPixelColor(lightoffset, rgb);
@@ -381,7 +381,7 @@ function strToNumber(str: string): number {
     /**
      * Set RGB Color argument
      */
-    //% weight=85 blockId=setLightColorArgs block="Set|%lightoffset|color to %rgb"
+    //% weight=85 blockId=setPixelRGBArgs block="Set|%lightoffset|color to %rgb"
     export function setPixelRGBArgs(lightoffset: Lights, rgb: number)
     {
         lhRGBLight.setPixelColor(lightoffset, rgb);
