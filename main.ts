@@ -365,7 +365,7 @@ function strToNumber(str: string): number {
      
 
     /**
-     * Do someting when Qdee receive remote-control code
+     * Do someting when remote-control longpress
      * @param code the ir key button that needs to be pressed
      * @param body code to run when event is raised
      */
@@ -375,7 +375,7 @@ function strToNumber(str: string): number {
     }
 
     /**
-     * Do someting when Qdee receive remote-control code
+     * Do someting when remote-control stop send
      * @param code the ir key button that needs to be pressed
      * @param body code to run when event is raised
      */
