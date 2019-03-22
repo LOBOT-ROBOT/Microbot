@@ -158,7 +158,14 @@
      
      let MESSAGE_HEAD: number = 0xff;
 
-	/**
+     let MESSAGE_HEAD_LONG: number = 0x100;
+     let MESSAGE_HEAD_STOP: number = 0x101;
+
+     let cntIr = 0;
+     let adress = 0;
+     let sendFlag = false;
+
+  /**
    * Microbot board initialization, please execute at boot time
   */
   //% weight=100 blockId=microbotInit block="Initialize Microbot"
@@ -197,16 +204,37 @@
                      distance = arg1Int;     
                  }
 
-                 if (arg2Int != -1 && arg2Int != 0)
-                 {
-                    control.raiseEvent(MESSAGE_HEAD,arg2Int);    
-                 }
+                 if (arg2Int != -1) {
+                    if (arg2Int == 0) {
+                        if (adress != 0) {
+                            control.raiseEvent(MESSAGE_HEAD_STOP, 0);
+                        }
+                        sendFlag = false;
+                        adress = 0;
+                    }
+                    else {
+                        if (adress != arg2Int) {
+                            if (!sendFlag) {
+                                control.raiseEvent(MESSAGE_HEAD, arg2Int);
+                                sendFlag = true;
+                            }
+                            adress = arg2Int
+                        }
+                        else {
+                            cntIr++;
+                        }
+                        if (cntIr >= 3) {
+                            cntIr = 0;
+                            control.raiseEvent(MESSAGE_HEAD_LONG, arg2Int);
+                        }
+                    }
+                }
              }
          }
          handleCmd = "";
-  }
+     }
+     
 
-  
   function countChar(src: string, strFind: string): number {
     let cnt: number = 0;
     for (let i = 0; i < src.length; i++)
@@ -333,12 +361,33 @@ function strToNumber(str: string): number {
     //% weight=95 blockId=onQdee_remote_ir_pressed block="on remote-control|%code|pressed"
     export function onQdee_remote_ir_pressed(code: IRKEY,body: Action) {
         control.onEvent(MESSAGE_HEAD,code,body);
+     }
+     
+
+    /**
+     * Do someting when Qdee receive remote-control code
+     * @param code the ir key button that needs to be pressed
+     * @param body code to run when event is raised
+     */
+    //% weight=94 blockId=onQdee_remote_ir_longpressed block="on remote-control|%code|long pressed"
+    export function onQdee_remote_ir_longpressed(code: IRKEY, body: Action) {
+        control.onEvent(MESSAGE_HEAD_LONG, code, body);
+    }
+
+    /**
+     * Do someting when Qdee receive remote-control code
+     * @param code the ir key button that needs to be pressed
+     * @param body code to run when event is raised
+     */
+    //% weight=93 blockId=onQdee_remote_no_ir block="on remote-control stop send"
+    export function onQdee_remote_no_ir(body: Action) {
+        control.onEvent(MESSAGE_HEAD_STOP, 0, body);
     }
      
 /**
 *  Obtain the distance of ultrasonic detection to the obstacle
 */
-//% weight=94 blockId=Ultrasonic block="Ultrasonic distance(cm)"
+//% weight=92 blockId=Ultrasonic block="Ultrasonic distance(cm)"
    export function Ultrasonic(): number {
 	   //init pins
     return distance;
@@ -348,7 +397,7 @@ function strToNumber(str: string): number {
     /**
      * Obtain the condition of the tracking sensor
      */
-    //% weight=91 blockGap=50  blockId=readLineStatus block="Line follower status |%status|"
+    //% weight=90 blockGap=50  blockId=readLineStatus block="Line follower status |%status|"
     export function readLineFollowerStatus(status: LineFollower): boolean {
         let s1 = pins.digitalReadPin(DigitalPin.P14);
         let s2 = pins.digitalReadPin(DigitalPin.P13);
