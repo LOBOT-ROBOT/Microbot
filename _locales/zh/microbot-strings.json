@@ -89,6 +89,6 @@
 	"microbot.grapObject|block":"机械臂抓取|角度 %angle|层级%layer|",
 	"microbot.releaseObject|block":"机械臂放开|距离(厘米) %distance|角度 %angle|层级%layer|",
 	"microbot.grapReady|block":"机械臂抓取就绪",
-	"microbit.onQdee_remote_ir_longpressed|block":"当遥控器|%code|按键长按",
-	"microbit.onQdee_remote_no_ir|block":"当遥控器停止按下"
+	"microbot.onQdee_remote_ir_longpressed|block":"当遥控器|%code|按键长按",
+	"microbot.onQdee_remote_no_ir|block":"当遥控器停止按下"
 }
