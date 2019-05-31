@@ -74,9 +74,31 @@
         //% block="100+"
         _100=152,
         //% block="200+"
-        _200=176,
+         _200 = 176,
+        //% block="A"
+        A=0x0C,
+        //% block="B"
+        B=0x8C,
+        //% block="C"
+        C = 0x4C,
+        //% block="D"
+        D = 0xCC,     
+        //% block="E"
+        E = 0xAC,   
+        //% block="F"
+        F = 0x5C,   
+        //% block="UP"
+        UP = 0X2C,
+        //% block="DOWN"
+        DOWN = 0X9C,  
+        //% block="LEFT"
+        LEFT = 0X6C,
+        //% block="RIGHT"
+        RIGHT = 0X1C, 
+        //% block="SET"
+        SET = 0XEC, 
         //% block="R0"
-        R0=104,
+         R0 = 104,
         //% block="R1"
         R1=48,
         //% block="R2"
@@ -164,6 +186,7 @@
      let cntIr = 0;
      let adress = 0;
      let sendFlag = false;
+     let sendLongFlag = false;
 
   /**
    * Microbot board initialization, please execute at boot time
@@ -210,6 +233,7 @@
                             control.raiseEvent(MESSAGE_HEAD_STOP, 0);
                         }
                         sendFlag = false;
+                        sendLongFlag = false
                         adress = 0;
                     }
                     else {
@@ -223,8 +247,8 @@
                         else {
                             cntIr++;
                         }
-                        if (cntIr >= 3) {
-                            cntIr = 0;
+                        if (cntIr >= 3 && !sendLongFlag) {
+                            sendLongFlag = true;
                             control.raiseEvent(MESSAGE_HEAD_LONG, arg2Int);
                         }
                     }
