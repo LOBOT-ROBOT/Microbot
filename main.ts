@@ -180,13 +180,9 @@
      
      let MESSAGE_HEAD: number = 0xff;
 
-     let MESSAGE_HEAD_LONG: number = 0x100;
      let MESSAGE_HEAD_STOP: number = 0x101;
-
-     let cntIr = 0;
      let adress = 0;
      let sendFlag = false;
-     let sendLongFlag = false;
 
   /**
    * Microbot board initialization, please execute at boot time
@@ -233,7 +229,6 @@
                             control.raiseEvent(MESSAGE_HEAD_STOP, 0);
                         }
                         sendFlag = false;
-                        sendLongFlag = false
                         adress = 0;
                     }
                     else {
@@ -243,13 +238,6 @@
                                 sendFlag = true;
                             }
                             adress = arg2Int
-                        }
-                        else {
-                            cntIr++;
-                        }
-                        if (cntIr >= 3 && !sendLongFlag) {
-                            sendLongFlag = true;
-                            control.raiseEvent(MESSAGE_HEAD_LONG, arg2Int);
                         }
                     }
                 }
@@ -387,17 +375,6 @@ function strToNumber(str: string): number {
         control.onEvent(MESSAGE_HEAD,code,body);
      }
      
-
-    /**
-     * Do someting when remote-control longpress
-     * @param code the ir key button that needs to be pressed
-     * @param body code to run when event is raised
-     */
-    //% weight=94 blockId=onQdee_remote_ir_longpressed block="on remote-control|%code|long pressed"
-    export function onQdee_remote_ir_longpressed(code: IRKEY, body: Action) {
-        control.onEvent(MESSAGE_HEAD_LONG, code, body);
-    }
-
     /**
      * Do someting when remote-control stop send
      * @param code the ir key button that needs to be pressed
