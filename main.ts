@@ -504,6 +504,7 @@ function strToNumber(str: string): number {
 
     /**
      * Resolve the parameters that the phone APP send the command,there are 3 parameters of servo debug command,the other command has just one parameter.
+     * @param index the index of the argument(1~3), eg: 1
      */
     //% weight=70  blockId=getArgs block="Get bluetooth command|%str|argument at %index"
     //% index.min=1 index.max=3
@@ -519,21 +520,21 @@ function strToNumber(str: string): number {
             if (index == 2)
             {
                 dataIndex = 10;
-                subLegth = 4;
+                subLegth = 2;
             }
             else if (index == 3)
             {
-                dataIndex = 15;
+                dataIndex = 13;
                 subLegth = 4;
             } 
             if (cmdType == CmdType.SERVO)
             {
-                if (str.length < 19)
+                if (str.length < 17)
                 {
                     return CmdType.NO_COMMAND;
                 }    
             }
-            if ((index == 1 && str.length < 10)||(index == 2 && str.length < 15)||(index == 3 && str.length < 19))
+            if ((index == 1 && str.length < 10)||(index == 2 && str.length < 13)||(index == 3 && str.length < 17))
             {
                 return 0;
             }    
