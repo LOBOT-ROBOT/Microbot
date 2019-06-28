@@ -468,37 +468,26 @@ function strToNumber(str: string): number {
      */
     //% weight=72 blockId=analyzeBluetoothCmd block="Get bluetooth command type %str"
     export function analyzeBluetoothCmd(str: string): number {
-        if (str.length > 9)
-        {
+        if (str.length > 6) {
             let cmdHead = str.substr(0, 3);
-            
-            if (cmdHead == "CMD")
-            {
-                let cmdTypeStr: string = str.substr(4, 2);
-                if (!checkArgsInt(cmdTypeStr))
-                {
-                    return CmdType.NO_COMMAND;
-                }    
-                let cmdType = parseInt(cmdTypeStr);
 
-                if (cmdType > CmdType.VERSION || cmdType < 0)
-                {
-                    return CmdType.NO_COMMAND; 
-                } 
-                else
-                {
+            if (cmdHead == "CMD") {
+                let cmdTypeStr: string = str.substr(4, 2);
+                let cmdType = strToNumber(cmdTypeStr);
+                if (cmdType > CmdType.VERSION || cmdType < 0) {
+                    return CmdType.NO_COMMAND;
+                }
+                else {
                     return cmdType;
-                }    
+                }
             }
-            else
-            {
-                return CmdType.NO_COMMAND; 
-            }    
-        }   
-        else
-        {
+            else {
+                return CmdType.NO_COMMAND;
+            }
+        }
+        else {
             return CmdType.NO_COMMAND;
-        }    
+        } 
     }
 
     function checkArgsInt(str: string): boolean {
@@ -549,11 +538,9 @@ function strToNumber(str: string): number {
                 return 0;
             }    
             let strArgs = str.substr(dataIndex, subLegth);
-            if (!checkArgsInt(strArgs))
-            {
+            let arg = strToNumber(strArgs);
+            if (arg == -1)
                 return 0;
-            }    
-            let arg = parseInt(strArgs);
             return arg;
         }
     }
