@@ -424,6 +424,16 @@ function strToNumber(str: string): number {
     }
     
     /**
+         * Set the brightness of the strip. This flag only applies to future operation.
+         * @param brightness a measure of LED brightness in 0-255. eg: 255
+    */
+    //% blockId="setBrightness" block="set light brightness %brightness"
+    //% weight=88
+    export function setBrightness(brightness: number): void {
+        lhRGBLight.setBrightness(brightness);
+    }
+     
+    /**
      * Set the color of the colored lights, after finished the setting please perform  the display of colored lights.
      */
     //% weight=86 blockId=setPixelRGB block="Set|%lightoffset|color to %rgb"
@@ -467,6 +477,7 @@ function strToNumber(str: string): number {
      * Resolve the Bluetooth that phone APP send command type, the total of nine types of commands: tank display command, servo debug command, obtaining the distance of ultrasonic command, obtaining temperature command, obtain sound size rank orders, to obtain the light level command, set the color lights command, honking command, firmware version information command.
      */
     //% weight=72 blockId=analyzeBluetoothCmd block="Get bluetooth command type %str"
+    //% subcategory=Bluetooth 
     export function analyzeBluetoothCmd(str: string): number {
         if (str.length > 6) {
             let cmdHead = str.substr(0, 3);
@@ -508,6 +519,7 @@ function strToNumber(str: string): number {
      */
     //% weight=70  blockId=getArgs block="Get bluetooth command|%str|argument at %index"
     //% index.min=1 index.max=3
+    //% subcategory=Bluetooth 
     export function getArgs(str: string,index: number): number {
         let cmdType = analyzeBluetoothCmd(str);
         if (cmdType == CmdType.NO_COMMAND)
@@ -550,6 +562,7 @@ function strToNumber(str: string): number {
      * Returns the enumeration of the command type, which can be compared with this module after obtaining the bluetooth command type sent by the mobile phone APP.
      */
     //% weight=68 blockId=getBluetoothCmdtype block="Bluetooth command type %type"
+    //% subcategory=Bluetooth 
     export function getBluetoothCmdtype(type: CmdType): number {
         return type;
     }
@@ -558,6 +571,7 @@ function strToNumber(str: string): number {
      * The command type of the tank is stop, go ahead, back, turn left, turn right, slow down, turn left slowly, turn right slowly.
      */
     //% weight=66 blockId=getRunCarType block="Car run type %type"
+    //% subcategory=Bluetooth  
     export function getRunCarTypeget(type: CarRunCmdType): number {
         return type;
     }
@@ -566,6 +580,7 @@ function strToNumber(str: string): number {
      * The distance from the ultrasonic obstacle is the standard command, which is sent to the mobile phone. The APP will indicate the distance of the ultrasonic obstacle.
      */
     //% weight=64 blockId=convertUltrasonic block="Convert ultrasonic distance %data"
+    //% subcategory=Bluetooth  
     export function convertUltrasonic(data: number): string {
         let cmdStr: string = "CMD|03|";
         cmdStr += data.toString();
@@ -577,6 +592,7 @@ function strToNumber(str: string): number {
      * The conversion temperature value is standard command, sent to the mobile phone, and the APP displays the current temperature.
      */
     //% weight=62 blockId=convertTemperature block="Convert temperature %data"
+    //% subcategory=Bluetooth  
     export function convertTemperature(data: number): string {
         let cmdStr: string = "CMD|04|";
         cmdStr += data.toString();
@@ -588,6 +604,7 @@ function strToNumber(str: string): number {
      * Convert the light value is the standard command and send it to the mobile phone. The APP displays the current light level (0~255).
      */
     //% weight=60 blockId=convertLight block="Convert light %data"
+    //% subcategory=Bluetooth  
     export function convertLight(data: number): string {
         let cmdStr: string = "CMD|06|";
         cmdStr += data.toString();
