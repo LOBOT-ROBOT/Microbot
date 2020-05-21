@@ -1,7 +1,7 @@
 {
     "name": "microbot",
     "version": "0.0.1",
-    "description": "Extension for Lobot Microbot",
+    "description": "Extension for Hiwonder Microbot",
     "license": "MIT",
     "dependencies": {
         "core": "*"
