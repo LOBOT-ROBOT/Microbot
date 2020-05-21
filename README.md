@@ -1,6 +1,6 @@
 # Microbot
 
-Extension for Lobot Microbot
+Extension for Hiwonder Microbot
 
 ## License
 
