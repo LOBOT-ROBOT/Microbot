@@ -91,5 +91,9 @@
 	"microbot.grapReady|block":"机械臂抓取就绪",
 	"microbot.onQdee_remote_ir_longpressed|block":"当遥控器|%code|按键长按",
 	"microbot.onQdee_remote_no_ir|block":"当遥控器停止按下",
-	"microbot.setBrightness|block":"设置彩灯亮度 %brightness"
+	"microbot.setBrightness|block":"设置彩灯亮度 %brightness",
+	"microbot.initRGBLightBelt|block":"初始化灯带引脚 %pin",
+	"microbot.belt_setPixelRGB|block":"设置灯带|%lightoffset|颜色为 %rgb",
+	"microbot.belt_showLight|block":"显示灯带",
+	"microbot.belt_clearLight|block":"关闭灯带"
 }

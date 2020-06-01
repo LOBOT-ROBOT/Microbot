@@ -22,7 +22,42 @@
         Green = 0x02,
         //% blockId="Blue" block="Blue"
 		Blue = 0x03
-    }
+     }
+     
+     enum LightsBelt {
+        //% block="Light 1"
+        Light1 = 0x00,
+        //% block="Light 2"
+        Light2 = 0x01,
+        //% block="Light 3"
+        Light3 = 0x02,
+        //% block="Light 4"
+         Light4 = 0x03,
+        //% block="Light 5"
+         Light5 = 0x04,
+        //% block="Light 6"
+        Light6 = 0x05,
+        //% block="Light 7"
+        Light7 = 0x06,
+        //% block="Light 8"
+        Light8 = 0x07,
+        //% block="Light 9"
+        Light9 = 0x08,
+        //% block="Light 10"
+        Light10 = 0x09,
+        //% block="Light 11"
+        Light11 = 0x0A,
+        //% block="Light 12"
+        Light12 = 0x0B,
+        //% block="Light 13"
+        Light13 = 0x0C,
+        //% block="Light 14"
+        Light14 = 0x0D,
+        //% block="Light 15"
+        Light15 = 0x0E,        
+        //% block="All"
+        All = 0x0F
+ }
 
     export enum Lights {
         //% block="Light 1"
@@ -39,6 +74,15 @@
         Light6 = 0x05,
         //% block="All"
         All = 0x06
+    }
+
+    export enum lightBeltPort {
+        //% block="P1"
+        P1 = 0x01,
+        //% block="P2"
+        P2 = 0x02,
+        //% block="P16"
+        P16 = 0x03
     }
 
     export enum LineFollower {
@@ -98,7 +142,7 @@
         //% block="SET"
         SET = 0XEC, 
         //% block="R0"
-         R0 = 104,
+        R0 = 104,
         //% block="R1"
         R1=48,
         //% block="R2"
@@ -165,14 +209,7 @@
 
 
     let lhRGBLight: RGBLight.LHRGBLight;
-	let R_F: number;
-	let r_f: number;
-	
-	let g_f: number;
-	let G_F: number;
-
-	let b_f: number;
-    let B_F: number;
+    let lhRGBLightBelt: RGBLight.LHRGBLight;
     
      let handleCmd: string = "";
      
@@ -200,7 +237,6 @@
   	    });	  
      }
 
-     
   /**
   * Get the handle command.
   */
@@ -284,9 +320,9 @@ function strToNumber(str: string): number {
         num += tmp;
     }    
     return num;
-    }
+}
      
-     function converOneChar(str: string): number {
+function converOneChar(str: string): number {
         if (str.compare("0") >= 0 && str.compare("9") <= 0) {
             return parseInt(str);
         }
@@ -313,7 +349,7 @@ function strToNumber(str: string): number {
         }
         else
             return -1; 
-    }
+}
 
 /**
 * Set the angle of servo 1 to 8, range of 0~180 degree
@@ -321,11 +357,11 @@ function strToNumber(str: string): number {
 //% weight=98 blockId=setServo block="Set servo|index %index|angle %angle|duration %duration"
 //% angle.min=0 angle.max=180
     export function setServo(index: number, angle: number, duration: number) {
-        if (angle > 180 || angle < 0)
-        {
+       if (angle > 180 || angle < 0)
+       {
             return; 
-        }    
-        let position = mapRGB(angle, 0, 180, 500, 2500);
+       }    
+       let position = mapRGB(angle, 0, 180, 500, 2500);
        
 	   let buf = pins.createBuffer(10);
 	   buf[0] = 0x55;
@@ -366,12 +402,12 @@ function strToNumber(str: string): number {
 }
     
     /**
-     * Do someting when Qdee receive remote-control code
+     * Do someting when  receive remote-control code
      * @param code the ir key button that needs to be pressed
      * @param body code to run when event is raised
      */
-    //% weight=95 blockId=onQdee_remote_ir_pressed block="on remote-control|%code|pressed"
-    export function onQdee_remote_ir_pressed(code: IRKEY,body: Action) {
+    //% weight=95 blockId=onremote_ir_pressed block="on remote-control|%code|pressed"
+    export function onremote_ir_pressed(code: IRKEY,body: Action) {
         control.onEvent(MESSAGE_HEAD,code,body);
      }
      
@@ -380,8 +416,8 @@ function strToNumber(str: string): number {
      * @param code the ir key button that needs to be pressed
      * @param body code to run when event is raised
      */
-    //% weight=93 blockId=onQdee_remote_no_ir block="on remote-control stop send"
-    export function onQdee_remote_no_ir(body: Action) {
+    //% weight=93 blockId=onremote_no_ir block="on remote-control stop send"
+    export function onremote_no_ir(body: Action) {
         control.onEvent(MESSAGE_HEAD_STOP, 0, body);
     }
      
@@ -392,7 +428,7 @@ function strToNumber(str: string): number {
    export function Ultrasonic(): number {
 	   //init pins
     return distance;
-}
+  }
    
 	
     /**
@@ -429,6 +465,7 @@ function strToNumber(str: string): number {
     */
     //% blockId="setBrightness" block="set light brightness %brightness"
     //% weight=88
+    //% subcategory=LED
     export function setBrightness(brightness: number): void {
         lhRGBLight.setBrightness(brightness);
     }
@@ -437,6 +474,7 @@ function strToNumber(str: string): number {
      * Set the color of the colored lights, after finished the setting please perform  the display of colored lights.
      */
     //% weight=86 blockId=setPixelRGB block="Set|%lightoffset|color to %rgb"
+    //% subcategory=LED
     export function setPixelRGB(lightoffset: Lights, rgb: RGBColors)
     {
         lhRGBLight.setPixelColor(lightoffset, rgb);
@@ -445,6 +483,7 @@ function strToNumber(str: string): number {
      * Set RGB Color argument
      */
     //% weight=85 blockId=setPixelRGBArgs block="Set|%lightoffset|color to %rgb"
+    //% subcategory=LED
     export function setPixelRGBArgs(lightoffset: Lights, rgb: number)
     {
         lhRGBLight.setPixelColor(lightoffset, rgb);
@@ -454,6 +493,7 @@ function strToNumber(str: string): number {
      * Display the colored lights, and set the color of the colored lights to match the use. After setting the color of the colored lights, the color of the lights must be displayed.
      */
     //% weight=84 blockId=showLight block="Show light"
+    //% subcategory=LED
     export function showLight() {
         lhRGBLight.show();
     }
@@ -462,12 +502,62 @@ function strToNumber(str: string): number {
      * Clear the color of the colored lights and turn off the lights.
      */
     //% weight=82 blockGap=50 blockId=clearLight block="Clear light"
+    //% subcategory=LED
     export function clearLight() {
         lhRGBLight.clear();
     }
 
+    /**
+	 * Initialize Light belt
+	 */
+    //% weight=80 blockId=initRGBLightBelt block="Initialize light belt at port %pin"
+    //% subcategory=LED
+    export function initRGBLightBelt(pin: lightBeltPort) {
+        switch (pin) {
+            case lightBeltPort.P1:
+                if (!lhRGBLightBelt) {
+                    lhRGBLightBelt = RGBLight.create(DigitalPin.P1, 15, RGBPixelMode.RGB);
+                }
+                break;
+            case lightBeltPort.P2:
+                if (!lhRGBLightBelt) {
+                    lhRGBLightBelt = RGBLight.create(DigitalPin.P2, 15, RGBPixelMode.RGB);
+                }
+            case lightBeltPort.P16:
+                    if (!lhRGBLightBelt) {
+                        lhRGBLightBelt = RGBLight.create(DigitalPin.P16, 15, RGBPixelMode.RGB);
+                    }
+                break;
+        }
+        belt_clearLight();
+    }
+    
+    /**
+     * Set the color of the colored lights, after finished the setting please perform the display of colored lights.
+     */
+    //% weight=78 blockId=belt_setPixelRGB block="Set light belt|%lightoffset|color to %rgb"
+    //% subcategory=LED    
+    export function belt_setPixelRGB(lightoffset: LightsBelt, rgb: RGBColors) {
+        lhRGBLightBelt.setBeltPixelColor(lightoffset, rgb);
+    }
+    
+    /**
+     * Display the colored lights, and set the color of the colored lights to match the use. After setting the color of the colored lights, the color of the lights must be displayed.
+     */
+    //% weight=76 blockId=belt_showLight block="Show light belt"
+    //% subcategory=LED    
+    export function belt_showLight() {
+        lhRGBLightBelt.show();
+    }
 
-	
+    /**
+     * Clear the color of the colored lights and turn off the lights.
+     */
+    //% weight=74 blockGap=50 blockId=belt_clearLight block="Clear light belt"
+    //% subcategory=LED    
+    export function belt_clearLight() {
+        lhRGBLightBelt.clear();
+    }
 
 	function mapRGB(x: number, in_min: number, in_max: number, out_min: number, out_max: number): number {
 		return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;

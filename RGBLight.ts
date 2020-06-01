@@ -61,6 +61,23 @@ namespace RGBLight {
             this.brightness = brightness & 0xff;
         }
 
+        setBeltPixelColor(pixeloffset: number, rgb: RGBColors): void {
+            if (pixeloffset == 15)//全部
+            {
+                for (let i = 0; i < this._length; i++)
+                {
+                    this.setPixelRGB(i, rgb);     
+                }
+            }
+            else
+            {
+                this.setPixelRGB(pixeloffset * 3, rgb);
+                this.setPixelRGB(pixeloffset * 3 + 1, rgb);
+                this.setPixelRGB(pixeloffset*3 + 2, rgb);
+            }
+            
+        }
+
         setPin(pin: DigitalPin): void {
             this.pin = pin;
             pins.digitalWritePin(this.pin, 0);
