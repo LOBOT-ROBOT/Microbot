@@ -24,7 +24,7 @@
 		Blue = 0x03
      }
      
-     enum LightsBelt {
+     export enum LightsBelt {
         //% block="Light 1"
         Light1 = 0x00,
         //% block="Light 2"
